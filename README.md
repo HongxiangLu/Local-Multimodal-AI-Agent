@@ -58,9 +58,14 @@ pip install dashscope chromadb pypdf sentence-transformers Pillow -i https://pyp
 *   添加图片: `python main.py add_image <path>`
 *   以文搜图: `python main.py search_image <query>`
 
-### 5.3 演示文档
+### 4.3 演示图片
 
-请提交一份 PDF 格式的演示报告（或直接包含在 README 中），内容需包括：
+![1](README_IMAGES\1.png)
 
-*   **运行截图**: 关键功能的运行结果截图（如搜索结果、分类后的文件夹结构）。
-*   **演示视频 (可选)**: 录制一段屏幕录像，演示从环境启动到功能使用的全过程。
+![2](README_IMAGES\2.png)
+
+![3](README_IMAGES\3.png)
+
+![4](README_IMAGES\4.png)
+
+![5](README_IMAGES\5.png)
