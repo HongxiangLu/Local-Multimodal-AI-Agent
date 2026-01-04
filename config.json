@@ -1,5 +1,5 @@
 {
-    "dashscope_api_key": "sk-YOUR_REAL_API_KEY_HERE",
+    "dashscope_api_key": "sk-03c44d2c021f46198a89615f97a776df",
     "text_embedding_model": "text-embedding-v3",
     "db_path": "./local_knowledge_db",
     "storage_root": "./local_storage"
