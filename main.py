@@ -6,9 +6,11 @@ import shutil
 import dashscope
 from dashscope import TextEmbedding, MultiModalEmbedding
 import chromadb
-from chromadb.config import Settings
 import pypdf
 from typing import List, Optional
+# 在 main.py 顶部增加引用
+from sentence_transformers import SentenceTransformer
+from PIL import Image
 
 
 # ==========================================
@@ -74,23 +76,26 @@ class FileManager:
 # 核心服务类
 # ==========================================
 
-class AliyunEmbeddingService:
+class HybridEmbeddingService:
     """
-    封装阿里云 DashScope 的 Embedding 服务
+    混合服务: 文本使用阿里云 API，图片使用本地 CLIP 模型
     """
-
-    def __init__(self, api_key, text_model, multimodal_model):
+    def __init__(self, api_key, text_model):
+        # 1. 初始化阿里云文本服务
         dashscope.api_key = api_key
         self.text_model = text_model
-        self.multimodal_model = multimodal_model
+        # 2. 初始化本地 CLIP 模型 (用于图片和以文搜图)
+        # 这是一个轻量级的 OpenAI CLIP 模型，会自动下载
+        print("正在加载本地 CLIP 模型 (clip-ViT-B-32)...")
+        self.local_clip = SentenceTransformer('clip-ViT-B-32')
 
     def get_text_embedding(self, text: str) -> Optional[List[float]]:
-        """调用文本向量模型"""
+        """调用阿里云 text-embedding-v3"""
         try:
             resp = TextEmbedding.call(
                 model=self.text_model,
                 input=text,
-                dimension=1024
+                dimension=1024  # 阿里文本向量维度
             )
             if resp.status_code == 200:
                 return resp.output['embeddings'][0]['embedding']
@@ -102,25 +107,19 @@ class AliyunEmbeddingService:
             return None
 
     def get_multimodal_embedding(self, text: str = None, image_path: str = None) -> Optional[List[float]]:
-        """调用多模态向量模型"""
-        input_data = {}
-        if text:
-            input_data['text'] = text
-        if image_path:
-            input_data['image'] = image_path
-
+        """使用本地 CLIP 模型生成向量"""
         try:
-            resp = MultiModalEmbedding.call(
-                model=self.multimodal_model,
-                input=input_data
-            )
-            if resp.status_code == 200:
-                return resp.output['embeddings'][0]['embedding']
-            else:
-                print(f"API Error (Multimodal): {resp}")
-                return None
+            if image_path:
+                # 图片转向量
+                img = Image.open(image_path)
+                # CLIP 输出维度通常是 512
+                return self.local_clip.encode(img).tolist()
+            elif text:
+                # 文本转向量 (用于搜图)
+                return self.local_clip.encode(text).tolist()
+            return None
         except Exception as e:
-            print(f"Exception during multimodal embedding: {e}")
+            print(f"Local CLIP Error: {e}")
             return None
 
 
@@ -224,17 +223,18 @@ def main():
     # 3. 初始化各模块
     print(">>> 正在初始化系统...")
 
-    # 文件管理器
     file_manager = FileManager(config["storage_root"])
 
-    # 阿里云服务
-    ali_service = AliyunEmbeddingService(
+    # === 修改点: 使用混合服务 ===
+    # 注意: 这里不再需要 multimodal_model 的配置
+    ali_service = HybridEmbeddingService(
         api_key=config["dashscope_api_key"],
-        text_model=config["text_embedding_model"],
-        multimodal_model=config["multimodal_embedding_model"]
+        text_model=config["text_embedding_model"]
     )
 
     # 数据库管理器
+    # 注意: CLIP 的维度是 512，与之前的阿里模型(1024)不同。
+    # 如果你之前运行过代码，请先删除 ./local_knowledge_db 文件夹，重新建库！
     db_manager = LocalDBManager(config["db_path"])
 
     print(">>> 系统初始化完成.\n")
