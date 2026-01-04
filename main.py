@@ -1,9 +1,5 @@
 import os
-
-# === 设置环境变量，使用 HF-Mirror 镜像加速本地 CLIP 下载 ===
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
-# ======================================================
-
+import transformers
 import argparse
 import sys
 import json
@@ -13,9 +9,11 @@ import numpy as np  # 用于计算相似度
 import dashscope
 from dashscope import TextEmbedding
 import chromadb
-from chromadb.config import Settings
 import pypdf
 from typing import List, Optional
+# === 设置环境变量，使用 HF-Mirror 镜像加速本地 CLIP 下载 ===
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+# ======================================================
 from sentence_transformers import SentenceTransformer
 from PIL import Image
 
@@ -90,10 +88,14 @@ class HybridEmbeddingService:
         self.text_model = text_model
 
         # 2. 初始化本地 CLIP 模型 (用于图片和以文搜图)
-        print(">>> 正在加载本地 CLIP 模型 (第一次运行会自动下载)...")
         try:
+            # --- 修改开始 ---
+            # 临时将 transformers 的日志级别设置为 ERROR，只看报错，不看警告
+            transformers.logging.set_verbosity_error()
             self.local_clip = SentenceTransformer('clip-ViT-B-32')
-            print(">>> CLIP 模型加载完成.")
+            # (推荐) 加载完成后，将日志级别恢复为 WARNING，以免错过后续可能的其他重要警告
+            transformers.logging.set_verbosity_warning()
+            # --- 修改结束 ---
         except Exception as e:
             print(f"Warning: CLIP 模型加载失败，图片功能将不可用. {e}")
             self.local_clip = None

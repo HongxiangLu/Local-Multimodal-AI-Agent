@@ -53,8 +53,9 @@ pip install dashscope chromadb pypdf sentence-transformers Pillow -i https://pyp
 通过命令行参数调用核心功能：
 
 *   添加论文: `python main.py add_paper <path> --topics "Topic1,Topic2"`
-*   整理论文: `python main.py organize_folder ./my_messy_downloads --topics "Topic1, Topic2"`
+*   整理论文: `python main.py organize_folder ./messy_downloads --topics "Topic1, Topic2"`
 *   搜索论文: `python main.py search_paper <query>`
+*   添加图片: `python main.py add_image <path>`
 *   以文搜图: `python main.py search_image <query>`
 
 ### 5.3 演示文档
