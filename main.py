@@ -262,7 +262,7 @@ def process_single_paper(file_path, topics_str, ali_service, classifier, file_ma
             "topic": assigned_topic,
             "original_path": file_path
         },
-        text_snippet=raw_text[:300] + "..."
+        snippet=raw_text[:300] + "..."
     )
     print(f"成功: 论文已索引至 '{assigned_topic}' 目录。")  # Output Statement
 
