@@ -1,0 +1,7 @@
+{
+    "dashscope_api_key": "sk-YOUR_REAL_API_KEY_HERE",
+    "text_embedding_model": "text-embedding-v3",
+    "multimodal_embedding_model": "multimodal-embedding-v1",
+    "db_path": "./local_knowledge_db",
+    "storage_root": "./local_storage"
+}
