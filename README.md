@@ -60,12 +60,12 @@ pip install dashscope chromadb pypdf sentence-transformers Pillow -i https://pyp
 
 ### 4.3 演示图片
 
-![1](README_IMAGES\1.png)
+![1](README_IMAGES/1.png)
 
-![2](README_IMAGES\2.png)
+![2](README_IMAGES/2.png)
 
-![3](README_IMAGES\3.png)
+![3](README_IMAGES/3.png)
 
-![4](README_IMAGES\4.png)
+![4](README_IMAGES/4.png)
 
-![5](README_IMAGES\5.png)
+![5](README_IMAGES/5.png)
