@@ -26,32 +26,36 @@
 *   **图像嵌入**: `clip-ViT-B-32` —— OpenAI 开源的经典图文匹配模型。
 *   **向量数据库**: `ChromaDB` —— 无需服务器，开箱即用的嵌入式数据库。
 
-## 4. 环境要求 (Environment)
+## 4. 使用说明 (Instructions)
 
-*   **操作系统**: Windows / macOS / Linux
-*   **Python 版本**: 建议 Python 3.8 及以上
-*   **内存**: 建议 8GB 及以上
+### 4.1 安装
 
-## 5. 安装说明 (Installation)
+```
+git clone https://github.com/HongxiangLu/Local-Multimodal-AI-Agent
+cd Local-Multimodal-AI-Agent
+python -m venv .venv
+./.venv/Scripts/activate
+pip install dashscope chromadb pypdf sentence-transformers Pillow -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
 
-为规范作业提交与评测流程，请严格按照以下要求提交：
+本项目需要调用阿里云（DashScope）API，在`config.json`中修改配置。项目中现有的API Key在2026年3月18日前有效。
+```json
+{
+    "dashscope_api_key": "sk-YOUR-API-KEY",
+    "text_embedding_model": "text-embedding-v3",
+    "db_path": "./local_knowledge_db",
+    "storage_root": "./local_storage"
+}
+```
 
-### 5.1 代码提交
+### 4.2 项目启动
 
-*   **GitHub 仓库**: 将完整项目代码上传至 GitHub 个人仓库，并提交仓库链接。
-*   **README 文档**: 仓库首页必须包含详细的 `README.md`，内容包括：
-    *   项目简介与核心功能列表。
-    *   环境配置与依赖安装说明。
-    *   **详细的使用说明**（包含具体的命令行示例）。
-    *   技术选型说明（使用了哪些模型、数据库等）。
+通过命令行参数调用核心功能：
 
-### 5.2 评测接口规范
-
-*   **统一入口**: 项目根目录下必须包含 `main.py` 文件。
-*   **一键调用**: 必须支持通过命令行参数调用核心功能。参考格式如下（不仅限于此）：
-    *   添加/分类论文: `python main.py add_paper <path> --topics "Topic1,Topic2"`
-    *   搜索论文: `python main.py search_paper <query>`
-    *   以文搜图: `python main.py search_image <query>`
+*   添加论文: `python main.py add_paper <path> --topics "Topic1,Topic2"`
+*   整理论文: `python main.py organize_folder ./my_messy_downloads --topics "Topic1, Topic2"`
+*   搜索论文: `python main.py search_paper <query>`
+*   以文搜图: `python main.py search_image <query>`
 
 ### 5.3 演示文档
 
